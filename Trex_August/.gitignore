@@ -1,0 +1,24 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+
+# Local environment/config files
+.env
+.env.*
+.python-version
+
+# Editor cruft
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Generated media/artifacts
+*.mp4

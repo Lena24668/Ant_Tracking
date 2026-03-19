@@ -1,0 +1,14 @@
+calculate_posture = false
+cm_per_pixel = 1
+detect_size_filter = [[10,1000]]
+detect_threshold = 15
+detect_type = background_subtraction
+gui_max_path_time = 300
+heatmap_ids = [0]
+meta_encoding = gray
+meta_real_width = 6608
+track_background_subtraction = true
+track_max_individuals = 1
+track_max_speed = 1652
+track_size_filter = [[200,500]]
+
