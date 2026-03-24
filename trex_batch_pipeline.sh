@@ -58,7 +58,10 @@ for group_dir in "$VIDEOS_DIR"/${DATE}-*; do
     fi
   fi
 
-  mapfile -t clips < <(find "$group_dir" -maxdepth 1 -type f -name "*.mp4" | sort)
+  clips=()
+  while IFS= read -r clip; do
+    clips+=("$clip")
+  done < <(find "$group_dir" -maxdepth 1 -type f -name "*.mp4" | sort)
   [ ${#clips[@]} -gt 0 ] || { echo "skip empty folder $group_dir"; continue; }
 
   list="[\"${clips[0]}\""

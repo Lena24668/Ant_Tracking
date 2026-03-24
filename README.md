@@ -12,19 +12,40 @@ Ants are small, often difficult to detect, and appear in large volumes of video 
 
 The repository is organized into the following components:
 
-- tiling.py  
-- reduction_of_dataset.py  
-- Preannotation_of_images.ipynb  
-- Train_custom_YOLO_model_August.ipynb  
-- sahi_inference_detection.py  
+- tiling.py
+- reduction_of_dataset.py
+- Preannotation_of_images.ipynb
+- Train_custom_YOLO_model_August.ipynb
+- sahi_inference_detection.py
+- chunk_aupa.py (new)
+- dir_to_video.py (new)
+- plot_centroid_trajectories.py (new)
 
 ### Additional folders
 
-- Server_pipeline/  
+- Server_pipeline/
   Scripts for running batch processing and rendering pipelines on a server.
 
-- Trex_August/  
+- Trex_August/
   Scripts and configuration files for integrating detections into the T-Rex tracking software.
+
+### Supporting workflows for file rendering and trajectory visualization
+
+- `dir_to_video.py`
+  - Render one image directory (or the directory containing a file) into a single MP4
+  - Supports image glob, fps, limit, skip frames, and optional keeping of the concat list for debugging
+  - Uses numeric filename sorting to preserve time order
+
+- `chunk_aupa.py`
+  - Split long ordered image sequences into chunks (default max 6000 frames per chunk)
+  - Optionally render each chunk to MP4 with ffmpeg
+  - Save chunk metadata as a JSON report and warn on index gaps/group changes
+
+- `plot_centroid_trajectories.py`
+  - Read per-ID centroid `.npz` data and draw XY trajectories with time-based color
+  - Auto-detect common centroid key names (`wcentroid`, `pcentroid`, `xc/yc`, etc.)
+  - Optionally overlay an average background image from the same session
+  - Output trajectory PNG files for analysis and review
 
 ---
 
@@ -32,13 +53,16 @@ The repository is organized into the following components:
 
 The full pipeline consists of the following steps:
 
-1. Extract tiles from raw videos  
-2. Reduce and clean the dataset  
-3. Pre-annotate images using a model  
-4. Manually refine annotations (external tools like Roboflow)  
-5. Train a custom YOLO model  
-6. Run inference (e.g. with SAHI for tiled detection)  
-7. Export detections for tracking (T-Rex)
+0. Convert image sequences to video (`dir_to_video.py`)
+1. Chunk long frame sequences into manageable parts (`chunk_aupa.py`)
+2. Extract tiles from raw videos (`tiling.py`)
+3. Reduce and clean the dataset (`reduction_of_dataset.py`)
+4. Pre-annotate images using a model (`Preannotation_of_images.ipynb`)
+5. Manually refine annotations (external tools like Roboflow)
+6. Train a custom YOLO model (`Train_custom_YOLO_model_August.ipynb`)
+7. Run inference (e.g. with SAHI for tiled detection) (`sahi_inference_detection.py`)
+8. Export detections for tracking (T-Rex) ('trex_batch_pipeline.sh')
+9. Plot centroid trajectories from tracking outputs (`plot_centroid_trajectories.py`)
 
 ---
 
@@ -161,7 +185,7 @@ What it includes:
 
 ---
 
-### 8. Tracking Integration (Trex_August/)
+### 8. Tracking With Trex (Trex_August/) (trex_batch_pipeline.sh) (Trex_pipeline.settings)
 
 Purpose:  
 Prepare detection outputs for tracking with T-Rex software.
@@ -170,6 +194,9 @@ What it includes:
 - Conversion scripts  
 - Chunk handling  
 - Trajectory analysis tools  
+
+trex_batch_pipeline.sh:
+- Chunk handling: it runs trex on videos in batches (days or hour) with predefined settings (Trex_pipeline.settings)
 
 ---
 
